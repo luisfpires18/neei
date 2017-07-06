@@ -1,0 +1,34 @@
+﻿@model NEEI.ViewModels.SubAcaoViewModel
+@{
+    ViewBag.Title = "Adicionar Sub-Acção";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm("Create", "SubAcao"))
+{
+    <div class="form-group">
+        @Html.LabelFor(m => m.subA.descricao)
+        @Html.TextBoxFor(m => m.subA.descricao, new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.subA.receita)
+        @Html.TextBoxFor(m => m.subA.receita, new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.subA.despesa)
+        @Html.TextBoxFor(m => m.subA.despesa, new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.subA.AcaoId)
+        @Html.DropDownListFor(m => m.subA.AcaoId, new SelectList(Model.aList, "id", "descricao"), "", new { @class = "form-control" })
+    </div>
+    
+
+    @Html.ActionLink("Voltar atrás", "Index", "SubAcao", null, new { @class = "btn btn-primary" })
+    <button type="submit" class="btn btn-primary">Adicionar</button>
+}

@@ -1,0 +1,72 @@
+﻿@model IEnumerable<NEEI.Models.SubAcao>
+@{
+    ViewBag.Title = "Sub-Acções";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Sub-Acções</h2>
+
+@if (!Model.Any())
+{
+    <p>Não há acções.</p>
+    @Html.ActionLink("Voltar atrás", "Index", "Home", null, new { @class = "btn btn-primary" })
+    @Html.ActionLink("Criar uma Sub-Acção", "New", "SubAcao", null, new { @class = "btn btn-primary" })
+}
+else
+{
+    <table class="table table-bordered table-hover" id="subacoes">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Descrição</th>
+                <th>Receita</th>
+                <th>Despesa</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var sa in Model)
+            {
+                <tr>
+                    <td>@sa.id</td>
+                    <td>@sa.descricao</td>
+                    <td>@sa.receita</td>
+                    <td>@sa.despesa</td>
+                    <td><button data-subacao-id="@sa.id" class="btn btn-danger js-delete">Apagar</button></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <p>
+        @Html.ActionLink("Voltar atrás", "Index", "Home", null, new { @class = "btn btn-primary" })
+        @Html.ActionLink("Criar um Sub-Acção", "New", "SubAcao", null, new { @class = "btn btn-primary" })
+    </p>
+}
+
+@section scripts
+{
+    <script>
+        $(document).ready(function() {
+            var table = $("#subacoes").DataTable();
+
+            $("#requests").on("click",
+                ".js-delete",
+                function() {
+                    var button = $(this);
+
+                    bootbox.confirm("Tem a certeza que deseja apagar esta Sub-Ação?",
+                        function(result) {
+                            if (result) {
+                                $.ajax({
+                                    url: "/subacao/" + button.attr("data-subacao-id"),
+                                    method: "DELETE",
+                                    success: function() {
+                                        table.row(button.parents("tr")).remove().draw();
+                                    }
+                                });
+                            }
+                        });
+                });
+        });
+    </script>
+}

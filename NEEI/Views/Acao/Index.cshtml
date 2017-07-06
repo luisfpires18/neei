@@ -1,0 +1,40 @@
+﻿@model IEnumerable<NEEI.Models.Acao>
+@{
+    ViewBag.Title = "Acções";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Acções</h2>
+
+@if (!Model.Any())
+{
+    <p>Não há acções.</p>
+    @Html.ActionLink("Voltar atrás", "Index", "Home", null, new { @class = "btn btn-primary" })
+    @Html.ActionLink("Criar uma acção", "New", "Acao", null, new { @class = "btn btn-primary" })
+}
+else
+{
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Descrição</th>
+                <th>Lucro</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var a in Model)
+            {
+                <tr>
+                    <td>@a.id</td>
+                    <td>@a.descricao</td>
+                    <td>@a.lucro</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <p>
+        @Html.ActionLink("Voltar atrás", "Index", "Home", null, new { @class = "btn btn-primary" })
+        @Html.ActionLink("Criar uma acção", "New", "Acao", null, new { @class = "btn btn-primary" })
+    </p>
+}

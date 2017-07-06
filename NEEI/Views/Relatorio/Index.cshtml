@@ -1,0 +1,41 @@
+﻿@model IEnumerable<NEEI.Models.RelatorioContas>
+@{
+    ViewBag.Title = "Relatorios";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Relatórios de Contas</h2>
+
+@if (!Model.Any())
+{
+    <p>Não há relatorios.</p>
+    @Html.ActionLink("Voltar atrás", "Index", "Home", null, new { @class = "btn btn-primary" })
+    @Html.ActionLink("Criar um Relatorio", "New", "Relatorio", null, new { @class = "btn btn-primary" })
+}
+else
+{
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Descrição</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var rc in Model)
+            {
+                <tr>
+                    <td>@rc.id</td>
+                    <td>@Html.ActionLink(@rc.descricao, "Index", "Acao", new { id = rc.id }, null)</td>
+                    <td>@rc.total</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <p>
+        @Html.ActionLink("Voltar atrás", "Index", "Home", null, new { @class = "btn btn-primary" })
+        @Html.ActionLink("Criar um Relatorio", "New", "Relatorio", null, new { @class = "btn btn-primary" })
+
+    </p>
+}

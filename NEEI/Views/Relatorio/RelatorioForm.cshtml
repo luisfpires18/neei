@@ -1,0 +1,18 @@
+﻿@model NEEI.Models.RelatorioContas
+@{
+    ViewBag.Title = "Adicionar Relatório";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm("Create", "Relatorio"))
+{
+    <div class="form-group">
+        @Html.LabelFor(m => m.descricao)
+        @Html.TextBoxFor(m => m.descricao, new { @class = "form-control" })
+    </div>
+
+    @Html.ActionLink("Voltar atrás", "Index", "Relatorio", null, new { @class = "btn btn-primary" })
+    <button type="submit" class="btn btn-primary">Adicionar</button>
+}

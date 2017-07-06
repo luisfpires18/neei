@@ -1,0 +1,24 @@
+﻿@model NEEI.ViewModels.AcaoViewModel
+@{
+    ViewBag.Title = "Adicionar Acção";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm("Create", "Acao"))
+{
+    <div class="form-group">
+        @Html.LabelFor(m => m.a.descricao)
+        @Html.TextBoxFor(m => m.a.descricao, new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.a.RelatorioId)
+        @Html.DropDownListFor(m => m.a.RelatorioId, new SelectList(Model.rcList, "id", "descricao"), "", new { @class = "form-control" })
+    </div>
+    
+
+    @Html.ActionLink("Voltar atrás", "Index", "Acao", null, new { @class = "btn btn-primary" })
+    <button type="submit" class="btn btn-primary">Adicionar</button>
+}
