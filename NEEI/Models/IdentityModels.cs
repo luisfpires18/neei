@@ -20,6 +20,10 @@ namespace NEEI.Models
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
+        public DbSet<Relatorio> Relatorio { get; set; }
+        public DbSet<Acao> Acao { get; set; }
+        public DbSet<SubAcao> SubAcao { get; set; }
+
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {

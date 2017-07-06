@@ -1,7 +1,7 @@
-﻿using System.Linq;
+﻿using System.Data.SqlClient;
+using System.Linq;
 using System.Web.Mvc;
 using NEEI.Models;
-using NEEI.ViewModels;
 
 namespace NEEI.Controllers
 {
@@ -15,17 +15,6 @@ namespace NEEI.Controllers
             _context = new ApplicationDbContext();
         }
 
-        public void getTotal(int id)
-        {
-            var rc = _context.RelatorioContas.SingleOrDefault(r => r.id == id);
-            var acoes = _context.Acao.ToList();
-
-            rc.total = 0;
-            foreach (var a in acoes)
-            {
-                rc.total += a.lucro;
-            }
-        }
 
         protected override void Dispose(bool disposing)
         {
@@ -33,58 +22,53 @@ namespace NEEI.Controllers
         }
 
         // Ver SubAcções;
-        public ActionResult Index()
+        public ActionResult Index(int id)
         {
-            var subAcoes = _context.SubAcao.ToList();
-            return View(subAcoes);
+            var acao = _context.Acao.SingleOrDefault(a => a.id == id);
+            ViewBag.IdAcao = id;
+            ViewBag.Acao = acao.descricao;
+            ViewBag.IdRelatorio = acao.RelatorioId;
+
+            var subAcoes = _context.SubAcao.SqlQuery("SELECT * FROM SubAcaos a WHERE a.AcaoId = @id", new SqlParameter("@id", id)).ToList();
+            return View("Index", subAcoes);
         }
 
-        // View de adicionar sub-acções;
-        public ActionResult New()
+        // View de adicionar SubAcção;
+        public ActionResult New(int id)
         {
-            var viewModel = new SubAcaoViewModel
-            {
-                aList = _context.Acao.ToList(),
-            };
-            return View("SubAcaoForm", viewModel);
+            var acao = _context.Acao.SingleOrDefault(a => a.id == id);
+            ViewBag.IdAcao = acao.id;
+            ViewBag.Acao = acao.descricao;
+
+            return View("SubAcaoForm");
         }
+        
 
         // Criar SubAcção;
         [HttpPost]
-        public ActionResult Create(SubAcao subA)
+        public ActionResult Create(SubAcao subacao)
         {
-            var acao =_context.Acao.SingleOrDefault(a => a.id == subA.AcaoId);
-            acao.lucro += subA.receita - subA.despesa;
+            // Atualiza a Acção;
+            var acao = _context.Acao.SingleOrDefault(a => a.id == subacao.AcaoId);
+            acao.lucro += subacao.receita - subacao.despesa;
 
-            getTotal(acao.RelatorioId);
+            //  Atualiza o Relatorio;
+            var rc = _context.Relatorio.SingleOrDefault(r => r.id == acao.RelatorioId);
+            var acoes = _context.Acao.SqlQuery("SELECT * FROM Acaos a WHERE a.RelatorioId = @id", new SqlParameter("@id", acao.RelatorioId)).ToList();
+            rc.total = 0;
+            foreach (var a in acoes)
+            {
+                rc.total += a.lucro;
+            }
 
-            _context.SubAcao.Add(subA);
+            subacao.Acaos = acao;
+
+            _context.SubAcao.Add(subacao);
             _context.SaveChanges();
 
-            return RedirectToAction("Index", "SubAcao");
+            return RedirectToAction("Index", "SubAcao" + "/Index/" + subacao.AcaoId);
         }
 
-        [HttpDelete]
-        public ActionResult Delete(SubAcao s)
-        {
-            var subAccao = _context.SubAcao.SingleOrDefault(a => a.id == s.id);
-
-            var acao = _context.Acao.SingleOrDefault(a => a.id == subAccao.AcaoId);
-            var lucro = subAccao.receita - subAccao.despesa;
-
-            if (lucro > 0)
-                acao.lucro = acao.lucro - lucro;
-
-            if(lucro < 0)
-                acao.lucro = acao.lucro + lucro;
-
-            getTotal(acao.RelatorioId);
-
-            _context.SubAcao.Remove(subAccao);
-            _context.SaveChanges();
-
-            return RedirectToAction("Index", "SubAcao");
-
-        }
+       
     }
 }

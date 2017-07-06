@@ -1,4 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
 using System.Web.Mvc;
 using NEEI.Models;
 
@@ -22,7 +25,7 @@ namespace NEEI.Controllers
         // Ver Relatorios;
         public ActionResult Index()
         {
-            var relatorios = _context.RelatorioContas.ToList();
+            var relatorios = _context.Relatorio.ToList();
             return View(relatorios);
         }
 
@@ -34,9 +37,9 @@ namespace NEEI.Controllers
 
         // Criar Pedido;
         [HttpPost]
-        public ActionResult Create(RelatorioContas rc)
+        public ActionResult Create(Relatorio rc)
         {
-            _context.RelatorioContas.Add(rc);
+            _context.Relatorio.Add(rc);
             _context.SaveChanges();
 
             return RedirectToAction("Index", "Relatorio");

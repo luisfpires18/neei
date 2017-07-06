@@ -1,7 +1,10 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Web;
 using System.Web.Mvc;
 using NEEI.Models;
-using NEEI.ViewModels;
 
 namespace NEEI.Controllers
 {
@@ -20,37 +23,40 @@ namespace NEEI.Controllers
             _context.Dispose();
         }
 
+
         // Ver Acções;
-        public ActionResult Index()
+        public ActionResult Index(int id)
         {
-           // var rc = _context.RelatorioContas.SingleOrDefault(r => r.id == id);
+            var relatorio = _context.Relatorio.SingleOrDefault(r => r.id == id);
+            ViewBag.IdRelatorio = id;
+            ViewBag.Relatorio = relatorio.descricao;
 
+            var acoes = _context.Acao.SqlQuery("SELECT * FROM Acaos a WHERE a.RelatorioId = @id", new SqlParameter("@id", id)).ToList();
 
-
-            var acoes = _context.Acao.ToList();
-
-
-            return View(acoes);
+            return View("Index", acoes);
         }
 
         // View de adicionar Acção;
-        public ActionResult New()
+        public ActionResult New(int id)
         {
-            var viewModel = new AcaoViewModel
-            {
-                rcList = _context.RelatorioContas.ToList(),
-            };
-            return View("AcaoForm", viewModel);
+            var relatorio = _context.Relatorio.SingleOrDefault(r => r.id == id);
+            ViewBag.IdRelatorio = relatorio.id;
+
+            return View("AcaoForm");
         }
 
         // Criar Acção;
         [HttpPost]
         public ActionResult Create(Acao a)
         {
+            var relatorio = _context.Relatorio.SingleOrDefault(r => r.id == a.RelatorioId);
+            a.Relatorios = relatorio;
+
             _context.Acao.Add(a);
             _context.SaveChanges();
 
-            return RedirectToAction("Index", "Acao");
+            return RedirectToAction("Index", "Acao" + "/Index/" + a.RelatorioId);
         }
+
     }
 }

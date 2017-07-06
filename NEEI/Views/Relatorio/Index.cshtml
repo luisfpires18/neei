@@ -1,4 +1,4 @@
-﻿@model IEnumerable<NEEI.Models.RelatorioContas>
+﻿@model IEnumerable<NEEI.Models.Relatorio>
 @{
     ViewBag.Title = "Relatorios";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -9,33 +9,59 @@
 @if (!Model.Any())
 {
     <p>Não há relatorios.</p>
-    @Html.ActionLink("Voltar atrás", "Index", "Home", null, new { @class = "btn btn-primary" })
-    @Html.ActionLink("Criar um Relatorio", "New", "Relatorio", null, new { @class = "btn btn-primary" })
 }
 else
 {
-    <table class="table table-bordered table-hover">
+    <table class="table table-bordered table-hover" id="relatorios">
         <thead>
             <tr>
-                <th>ID</th>
+                <th width="1">ID</th>
                 <th>Descrição</th>
                 <th>Total</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
             @foreach (var rc in Model)
             {
                 <tr>
-                    <td>@rc.id</td>
-                    <td>@Html.ActionLink(@rc.descricao, "Index", "Acao", new { id = rc.id }, null)</td>
-                    <td>@rc.total</td>
+                    <td width="1">@rc.id</td>
+                    <td>@Html.ActionLink(@rc.descricao, "Index", "Acao", new { rc.id }, null)</td>
+                    <td>@rc.total€</td>
+                    <td><button data-relatorio-id="@rc.id" class="btn btn-danger js-delete">Apagar</button></td>
                 </tr>
             }
         </tbody>
     </table>
-    <p>
-        @Html.ActionLink("Voltar atrás", "Index", "Home", null, new { @class = "btn btn-primary" })
-        @Html.ActionLink("Criar um Relatorio", "New", "Relatorio", null, new { @class = "btn btn-primary" })
+}
+<p>
+    @Html.ActionLink("Voltar atrás", "Index", "Home", null, new { @class = "btn btn-primary" })
+    @Html.ActionLink("Criar um Relatorio", "New", "Relatorio", null, new { @class = "btn btn-primary" })
+</p>
+@section scripts
+{
+    <script>
+        $(document).ready(function() {
+            var table = $("#relatorios").DataTable();
 
-    </p>
+            $("#relatorios").on("click",
+                ".js-delete",
+                function() {
+                    var button = $(this);
+
+                    bootbox.confirm("Tem a certeza que deseja apagar este Relatório?",
+                        function(result) {
+                            if (result) {
+                                $.ajax({
+                                    url: "/api/relatorio/" + button.attr("data-relatorio-id"),
+                                    method: "DELETE",
+                                    success: function() {
+                                        table.row(button.parents("tr")).remove().draw();
+                                    }
+                                });
+                            }
+                        });
+                });
+        });
+    </script>
 }

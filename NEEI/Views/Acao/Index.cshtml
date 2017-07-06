@@ -1,40 +1,69 @@
 ﻿@model IEnumerable<NEEI.Models.Acao>
 @{
-    ViewBag.Title = "Acções";
+    ViewBag.Title = "Acções do Relatório " + @ViewBag.Relatorio;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Acções</h2>
+<h2>@ViewBag.Title</h2>
 
 @if (!Model.Any())
 {
     <p>Não há acções.</p>
-    @Html.ActionLink("Voltar atrás", "Index", "Home", null, new { @class = "btn btn-primary" })
-    @Html.ActionLink("Criar uma acção", "New", "Acao", null, new { @class = "btn btn-primary" })
 }
 else
 {
-    <table class="table table-bordered table-hover">
+    <table class="table table-bordered table-hover" id="acoes">
         <thead>
             <tr>
-                <th>ID</th>
+                <th width="1">ID</th>
                 <th>Descrição</th>
                 <th>Lucro</th>
+                <th>IdRelatorio</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var a in Model)
+            @foreach (var acao in Model)
             {
                 <tr>
-                    <td>@a.id</td>
-                    <td>@a.descricao</td>
-                    <td>@a.lucro</td>
+                    <td width="1">@acao.id</td>
+                    <td>@Html.ActionLink(acao.descricao, "Index", "SubAcao", new {acao.id}, null)</td>
+                    <td>@acao.lucro€</td>
+                    <td>@acao.RelatorioId</td>
+                    <td><button data-acao-id="@acao.id" class="btn btn-danger js-delete">Apagar</button></td>
                 </tr>
             }
         </tbody>
     </table>
-    <p>
-        @Html.ActionLink("Voltar atrás", "Index", "Home", null, new { @class = "btn btn-primary" })
-        @Html.ActionLink("Criar uma acção", "New", "Acao", null, new { @class = "btn btn-primary" })
-    </p>
+}
+<p>
+    @Html.ActionLink("Voltar atrás", "Index", "Relatorio", null, new { @class = "btn btn-primary" })
+    @Html.ActionLink("Criar uma acção", "New", "Acao", new { id = ViewBag.IdRelatorio}, new { @class = "btn btn-primary" })
+</p>
+@section scripts
+{
+    <script>
+        $(document).ready(function() {
+            var table = $("#acoes").DataTable();
+
+            $("#acoes").on("click",
+                ".js-delete",
+                function() {
+                    var button = $(this);
+
+                    bootbox.confirm("Tem a certeza que deseja apagar esta Ação?",
+                        function(result) {
+                            if (result) {
+                                $.ajax({
+                                    url: "/api/acao/" + button.attr("data-acao-id"),
+                                    method: "DELETE",
+                                    success: function() {
+                                        table.row(button.parents("tr")).remove().draw();
+                                    }
+                                });
+                            }
+                        });
+                });
+        });
+    </script>
 }
