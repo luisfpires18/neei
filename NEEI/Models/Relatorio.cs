@@ -9,13 +9,13 @@ namespace NEEI.Models
     public class Relatorio
     {
 
-        public int id { get; set; }
+        public int Id { get; set; }
 
         [Required]
-        [Display(Name = "Relatório")]
-        public string descricao { get; set; }
+        [Display(Name = "Nome")]
+        public string Nome { get; set; }
 
         [Display(Name = "Total")]
-        public float total { get; set; }
+        public float Valor { get; set; }
     }
 }

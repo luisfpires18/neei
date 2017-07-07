@@ -1,38 +1,39 @@
-﻿@model IEnumerable<NEEI.Models.SubAcao>
+﻿@model IEnumerable<NEEI.Models.Categoria>
 @{
-    ViewBag.Title = "Sub-Acções de " + ViewBag.Acao;
+    ViewBag.Title = ViewBag.Acao;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Sub-Acções</h2>
+<h2>@ViewBag.Title</h2>
 
 @if (!Model.Any())
 {
-    <p>Não há acções.</p>
+    <p>Não há categorias.</p>
 }
 else
 {
-    <table class="table table-bordered table-hover" id="subacoes">
+    <table class="table table-bordered table-hover" id="categorias">
         <thead>
             <tr>
                 <th width="1">ID</th>
                 <th>Descrição</th>
-                <th>Receita</th>
-                <th>Despesa</th>
+                <th>Lucro</th>
                 <th>IdAcao</th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var sa in Model)
+            @foreach (var c in Model)
             {
                 <tr>
-                    <td width="1">@sa.id</td>
-                    <td>@sa.descricao</td>
-                    <td>@sa.receita€</td>
-                    <td>@sa.despesa€</td>
-                    <td>@sa.AcaoId</td>
-                    <td><button data-subacao-id="@sa.id" class="btn btn-danger js-delete">Apagar</button></td>
+                    <td width="1">@c.Id</td>
+                    <td>@Html.ActionLink(c.Descricao, "Index", "Item", new { id = c.Id }, null)</td>
+                    <td>@c.Lucro€</td>
+                    <td>@c.AcaoId</td>
+                    <td>
+                        @*@Html.ActionLink("Editar", "Edit", "SubAcao", new { id = sa.id }, new { @class = "btn btn-primary" })*@
+                        <button data-categoria-id="@c.Id" class="btn btn-danger js-delete">Apagar</button>
+                    </td>
                 </tr>
             }
         </tbody>
@@ -40,25 +41,25 @@ else
 }
 <p>
     @Html.ActionLink("Voltar atrás", "Index", "Acao", new { id = ViewBag.IdRelatorio }, new { @class = "btn btn-primary" })
-    @Html.ActionLink("Criar uma Sub-Acção", "New", "SubAcao", new { id = ViewBag.IdAcao}, new { @class = "btn btn-primary" })
+    @Html.ActionLink("Criar categoria", "New", "Categoria", new { id = ViewBag.IdAcao }, new { @class = "btn btn-primary" })
 </p>
 
 @section scripts
 {
     <script>
         $(document).ready(function() {
-            var table = $("#subacoes").DataTable();
+            var table = $("#categorias").DataTable();
 
-            $("#subacoes").on("click",
+            $("#categorias").on("click",
                 ".js-delete",
                 function() {
                     var button = $(this);
 
-                    bootbox.confirm("Tem a certeza que deseja apagar esta Sub-Ação?",
+                    bootbox.confirm("Tem a certeza que deseja apagar esta Categoria?",
                         function(result) {
                             if (result) {
                                 $.ajax({
-                                    url: "/api/subacao/" + button.attr("data-subacao-id"),
+                                    url: "/api/categoria/" + button.attr("data-categoria-id"),
                                     method: "DELETE",
                                     success: function() {
                                         table.row(button.parents("tr")).remove().draw();

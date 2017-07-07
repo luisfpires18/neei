@@ -9,13 +9,13 @@
 @using (Html.BeginForm("Create", "Acao"))
 {
     <div class="form-group">
-        @Html.LabelFor(m => m.descricao)
-        @Html.TextBoxFor(m => m.descricao, new { @class = "form-control" })
+        @Html.LabelFor(m => m.Descricao)
+        @Html.TextBoxFor(m => m.Descricao, new { @class = "form-control" })
     </div>
 
 
     <input type="hidden" id="relatorioId" name="relatorioId" value="@ViewBag.IdRelatorio">
-    @Html.HiddenFor(m => m.id)
+    @Html.HiddenFor(m => m.Id)
     
 
     @Html.ActionLink("Voltar atrás", "Index", "Acao", new {id = ViewBag.IdRelatorio }, new { @class = "btn btn-primary" })

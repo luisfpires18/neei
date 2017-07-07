@@ -9,8 +9,8 @@
 @using (Html.BeginForm("Create", "Relatorio"))
 {
     <div class="form-group">
-        @Html.LabelFor(m => m.descricao)
-        @Html.TextBoxFor(m => m.descricao, new { @class = "form-control" })
+        @Html.LabelFor(m => m.Nome)
+        @Html.TextBoxFor(m => m.Nome, new { @class = "form-control" })
     </div>
 
     @Html.ActionLink("Voltar atrás", "Index", "Relatorio", null, new { @class = "btn btn-primary" })

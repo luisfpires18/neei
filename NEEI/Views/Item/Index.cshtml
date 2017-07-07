@@ -1,0 +1,79 @@
+﻿@model IEnumerable<NEEI.Models.Item>
+@{
+    ViewBag.Title = ViewBag.Categoria;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@if (!Model.Any())
+{
+    <p>Não há items.</p>
+}
+else
+{
+    <table class="table table-bordered table-hover" id="items">
+        <thead>
+            <tr>
+                <th width="1">ID</th>
+                <th>Descrição</th>
+                <th>Titular</th>
+                <th>Receita</th>
+                <th>Despesa</th>
+                <th>Quantidade</th>
+                <th>IdCategoria</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var i in Model)
+            {
+                <tr>
+                    <td width="1">@i.Id</td>
+                    <td>@i.Descricao</td>
+                    <td>@i.Titular</td>
+                    <td>@i.Receita€</td>
+                    <td>@i.Despesa€</td>
+                    <td>@i.Quantidade</td>
+                    <td>@i.CategoriaId</td>
+                    <td>
+                        @*@Html.ActionLink("Editar", "Edit", "SubAcao", new { id = sa.id }, new { @class = "btn btn-primary" })*@
+                        <button data-item-id="@i.Id" class="btn btn-danger js-delete">Apagar</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+<p>
+    @Html.ActionLink("Voltar atrás", "Index", "Categoria", new { id = ViewBag.IdAcao }, new { @class = "btn btn-primary" })
+    @Html.ActionLink("Adicionar", "New", "Item", new { id = ViewBag.IdCategoria}, new { @class = "btn btn-primary" })
+</p>
+
+@section scripts
+{
+    <script>
+        $(document).ready(function() {
+            var table = $("#items").DataTable();
+
+            $("#items").on("click",
+                ".js-delete",
+                function() {
+                    var button = $(this);
+
+                    bootbox.confirm("Tem a certeza que deseja apagar este Item?",
+                        function(result) {
+                            if (result) {
+                                $.ajax({
+                                    url: "/api/item/" + button.attr("data-item-id"),
+                                    method: "DELETE",
+                                    success: function() {
+                                        table.row(button.parents("tr")).remove().draw();
+                                    }
+                                });
+                            }
+                        });
+                });
+        });
+    </script>
+}

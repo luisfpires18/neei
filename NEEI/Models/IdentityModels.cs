@@ -22,7 +22,8 @@ namespace NEEI.Models
     {
         public DbSet<Relatorio> Relatorio { get; set; }
         public DbSet<Acao> Acao { get; set; }
-        public DbSet<SubAcao> SubAcao { get; set; }
+        public DbSet<Categoria> Categoria { get; set; }
+        public DbSet<Item> Item { get; set; }
 
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)

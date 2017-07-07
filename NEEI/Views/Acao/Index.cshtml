@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<NEEI.Models.Acao>
 @{
-    ViewBag.Title = "Acções do Relatório " + @ViewBag.Relatorio;
+    ViewBag.Title = ViewBag.Relatorio;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -17,7 +17,7 @@ else
             <tr>
                 <th width="1">ID</th>
                 <th>Descrição</th>
-                <th>Lucro</th>
+                <th>Total</th>
                 <th>IdRelatorio</th>
                 <th></th>
             </tr>
@@ -26,11 +26,11 @@ else
             @foreach (var acao in Model)
             {
                 <tr>
-                    <td width="1">@acao.id</td>
-                    <td>@Html.ActionLink(acao.descricao, "Index", "SubAcao", new {acao.id}, null)</td>
-                    <td>@acao.lucro€</td>
+                    <td width="1">@acao.Id</td>
+                    <td>@Html.ActionLink(acao.Descricao, "Index", "Categoria", new {id = acao.Id}, null)</td>
+                    <td>@acao.Total€</td>
                     <td>@acao.RelatorioId</td>
-                    <td><button data-acao-id="@acao.id" class="btn btn-danger js-delete">Apagar</button></td>
+                    <td><button data-acao-id="@acao.Id" class="btn btn-danger js-delete">Apagar</button></td>
                 </tr>
             }
         </tbody>

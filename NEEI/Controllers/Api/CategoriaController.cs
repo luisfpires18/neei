@@ -9,12 +9,12 @@ using NEEI.Models;
 
 namespace NEEI.Controllers.Api
 {
-    public class SubAcaoController : ApiController
+    public class CategoriaController : ApiController
     {
         /// Base de Dados;
         private ApplicationDbContext _context;
 
-        public SubAcaoController()
+        public CategoriaController()
         {
             _context = new ApplicationDbContext();
         }
@@ -28,33 +28,33 @@ namespace NEEI.Controllers.Api
         [HttpDelete]
         public IHttpActionResult Delete(int id)
         {
-            // Procura SubAcção por Id;
-            var subAccao = _context.SubAcao.SingleOrDefault(a => a.id == id);
+            // Procura Categoria por Id;
+            var categoria = _context.Categoria.SingleOrDefault(a => a.Id == id);
+            
+            // Poe o Lucro a 0;
+            categoria.Lucro = 0;
 
             // Procura Acção por Id;
-            var acao = _context.Acao.SingleOrDefault(a => a.id == subAccao.AcaoId);
-            // Calcula o Lucro;
-            var lucro = subAccao.receita - subAccao.despesa;
+            var acao = _context.Acao.SingleOrDefault(a => a.Id == categoria.AcaoId);
+            var categorias = _context.Categoria.SqlQuery("SELECT * FROM Categorias c WHERE c.AcaoId = @id", new SqlParameter("@id", categoria.AcaoId)).ToList();
 
-            // Se for positivo, retira-se esse valor;
-            if (lucro > 0)
-                acao.lucro = acao.lucro - lucro;
-
-            // Se for negativo, aumenta esse valor;
-            if (lucro < 0)
-                acao.lucro = acao.lucro + lucro;
-
-            // Atualiza o Total do Relatorio de Contas;
-            var rc = _context.Relatorio.SingleOrDefault(r => r.id == acao.RelatorioId);
-            var acoes = _context.Acao.SqlQuery("SELECT * FROM Acaos a WHERE a.RelatorioId = @id", new SqlParameter("@id", acao.RelatorioId)).ToList();
-
-            rc.total = 0;
-            foreach (var a in acoes)
+            acao.Total = 0;
+            foreach (var c in categorias)
             {
-                rc.total += a.lucro;
+                acao.Total += c.Lucro;
             }
 
-            _context.SubAcao.Remove(subAccao);
+            // Atualiza o Total do Relatorio de Contas;
+            var rc = _context.Relatorio.SingleOrDefault(r => r.Id == acao.RelatorioId);
+            var acoes = _context.Acao.SqlQuery("SELECT * FROM Acaos a WHERE a.RelatorioId = @id", new SqlParameter("@id", acao.RelatorioId)).ToList();
+
+            rc.Valor = 0;
+            foreach (var a in acoes)
+            {
+                rc.Valor += a.Total;
+            }
+
+            _context.Categoria.Remove(categoria);
             _context.SaveChanges();
 
             return Ok();

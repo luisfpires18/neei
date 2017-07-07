@@ -1,0 +1,22 @@
+﻿@model NEEI.Models.Categoria
+@{
+    ViewBag.Title = "Adicionar Categoria";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm("Create", "Categoria"))
+{
+    <div class="form-group">
+        @Html.LabelFor(m => m.Descricao)
+        @Html.TextBoxFor(m => m.Descricao, new { @class = "form-control" })
+    </div>
+
+    <input type="hidden" id="acaoId" name="acaoId" value="@ViewBag.IdAcao">
+    @Html.HiddenFor(m => m.Id)
+
+
+    @Html.ActionLink("Voltar atrás", "Index", "Categoria", new { id = ViewBag.IdAcao }, new { @class = "btn btn-primary" })
+    <button type="submit" class="btn btn-primary">Adicionar</button>
+}

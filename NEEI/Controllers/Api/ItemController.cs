@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -8,12 +9,12 @@ using NEEI.Models;
 
 namespace NEEI.Controllers.Api
 {
-    public class RelatorioController : ApiController
+    public class ItemController : ApiController
     {
         /// Base de Dados;
         private ApplicationDbContext _context;
 
-        public RelatorioController()
+        public ItemController()
         {
             _context = new ApplicationDbContext();
         }
@@ -27,13 +28,11 @@ namespace NEEI.Controllers.Api
         [HttpDelete]
         public IHttpActionResult Delete(int id)
         {
-            // Procura Relatorio por Id;
-            var relatorio = _context.Relatorio.SingleOrDefault(r => r.Id == id);
+            // Procura Item por Id;
+            var item = _context.Item.SingleOrDefault(a => a.Id == id);
+            
 
-            if (relatorio == null)
-                return NotFound();
-
-            _context.Relatorio.Remove(relatorio);
+            _context.Item.Remove(item);
             _context.SaveChanges();
 
             return Ok();

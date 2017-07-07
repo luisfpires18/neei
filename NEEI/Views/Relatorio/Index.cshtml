@@ -16,7 +16,7 @@ else
         <thead>
             <tr>
                 <th width="1">ID</th>
-                <th>Descrição</th>
+                <th>Nome</th>
                 <th>Total</th>
                 <th></th>
             </tr>
@@ -25,10 +25,10 @@ else
             @foreach (var rc in Model)
             {
                 <tr>
-                    <td width="1">@rc.id</td>
-                    <td>@Html.ActionLink(@rc.descricao, "Index", "Acao", new { rc.id }, null)</td>
-                    <td>@rc.total€</td>
-                    <td><button data-relatorio-id="@rc.id" class="btn btn-danger js-delete">Apagar</button></td>
+                    <td width="1">@rc.Id</td>
+                    <td>@Html.ActionLink(rc.Nome, "Index", "Acao", new { rc.Id }, null)</td>
+                    <td>@rc.Valor€</td>
+                    <td><button data-relatorio-id="@rc.Id" class="btn btn-danger js-delete">Apagar</button></td>
                 </tr>
             }
         </tbody>

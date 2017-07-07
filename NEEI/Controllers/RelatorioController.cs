@@ -35,7 +35,7 @@ namespace NEEI.Controllers
             return View("RelatorioForm");
         }
 
-        // Criar Pedido;
+        // Criar Relatorio;
         [HttpPost]
         public ActionResult Create(Relatorio rc)
         {

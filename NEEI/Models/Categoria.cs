@@ -6,7 +6,7 @@ using System.Web;
 
 namespace NEEI.Models
 {
-    public class Acao
+    public class Categoria
     {
         public int Id { get; set; }
 
@@ -14,13 +14,13 @@ namespace NEEI.Models
         [Display(Name = "Descrição")]
         public string Descricao { get; set; }
 
-        [Display(Name = "Total")]
-        public float Total { get; set; }
+        [Display(Name = "Lucro")]
+        public float Lucro { get; set; }
 
         [Required]
-        [Display(Name = "Relatório de Contas")]
-        public int RelatorioId { get; set; }
+        [Display(Name = "Ação")]
+        public int AcaoId { get; set; }
 
-        public Relatorio Relatorios { get; set; }
+        public Acao Acaos { get; set; }
     }
 }
