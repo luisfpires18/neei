@@ -41,7 +41,7 @@ namespace NEEI.Controllers
         {
             var categoria = _context.Categoria.SingleOrDefault(c => c.Id == id);
             ViewBag.IdCategoria = id;
-        
+            ViewBag.Categoria = categoria.Descricao;
             return View("ItemForm");
         }
 

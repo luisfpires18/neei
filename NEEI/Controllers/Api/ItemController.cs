@@ -28,13 +28,34 @@ namespace NEEI.Controllers.Api
         [HttpDelete]
         public IHttpActionResult Delete(int id)
         {
-            // Procura Item por Id;
+            // Procura Tudo;
             var item = _context.Item.SingleOrDefault(a => a.Id == id);
-            
+            var categoria = _context.Categoria.SingleOrDefault(c => c.Id == item.CategoriaId);
+            var acao = _context.Acao.SingleOrDefault(a => a.Id == categoria.AcaoId);
+            var relatorio = _context.Relatorio.SingleOrDefault(r => r.Id == acao.RelatorioId);
 
+            // Calcula o Lucro;
+            var lucro = item.Receita - item.Despesa;
+
+            // Se for positivo, retira-se esse valor;
+            if (lucro > 0)
+            {
+                categoria.Lucro = categoria.Lucro - lucro;
+                acao.Total = acao.Total - lucro;
+                relatorio.Valor = relatorio.Valor - lucro;
+            }
+
+            // Se for negativo, aumenta esse valor;
+            if (lucro < 0)
+            {
+                categoria.Lucro = categoria.Lucro + lucro * (-1);
+                acao.Total = acao.Total + lucro * (-1);
+                relatorio.Valor = relatorio.Valor + lucro * (-1);
+            }
+     
+            // Atualiza dados;
             _context.Item.Remove(item);
             _context.SaveChanges();
-
             return Ok();
         }
     }
